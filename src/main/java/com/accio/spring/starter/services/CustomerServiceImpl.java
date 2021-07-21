@@ -1,5 +1,6 @@
 package com.accio.spring.starter.services;
 
+import com.accio.spring.starter.exceptions.EntityNotFoundException;
 import com.accio.spring.starter.exceptions.customer.CustomerInvalidDataException;
 import com.accio.spring.starter.exceptions.customer.CustomerInvalidEmailException;
 import com.accio.spring.starter.exceptions.customer.CustomerNotFoundException;
@@ -48,14 +49,23 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public Optional<Customer> findById(String id) {
+    public Optional<Customer> findByIdNoException(String id) {
         return repository.findById(id);
+    }
+
+    @Override
+    public Customer findById(String id) {
+        Optional<Customer> optionalCustomer = repository.findById(id);
+        if(optionalCustomer.isEmpty() == true) {
+            throw new EntityNotFoundException(Customer.class, "id", id);
+        }
+        return optionalCustomer.get();
     }
 
     @Override
     public Boolean update(String id, Customer toUpdate) throws Exception {
         try {
-            Optional<Customer> optionalCustomer = this.findById(id);
+            Optional<Customer> optionalCustomer = this.findByIdNoException(id);
 
             if (optionalCustomer.isEmpty()) {
                 // not found

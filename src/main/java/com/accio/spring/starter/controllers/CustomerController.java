@@ -1,6 +1,5 @@
 package com.accio.spring.starter.controllers;
 
-import com.accio.spring.starter.exceptions.customer.CustomerNotFoundException;
 import com.accio.spring.starter.models.Customer;
 import com.accio.spring.starter.services.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +10,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 public class CustomerController {
@@ -26,15 +24,15 @@ public class CustomerController {
     }
 
     @GetMapping("/api/customers/{id}")
-    public ResponseEntity<Customer> getOne(@PathVariable String id) {
-        Optional<Customer> optionalCustomer = this.service.findById(id);
-        if (optionalCustomer.isEmpty()) {
+    public ResponseEntity<Customer> getOne(@PathVariable String id) throws Exception {
+        Customer customer = this.service.findById(id);
+        /*if (optionalCustomer.isEmpty()) {
             // return not found error
             // FIXME: throw an http error instead of returning response
 //            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             throw new CustomerNotFoundException(id);
-        }
-        return new ResponseEntity<>(optionalCustomer.get(), HttpStatus.OK);
+        }*/
+        return new ResponseEntity<>(customer, HttpStatus.OK);
     }
 
 }

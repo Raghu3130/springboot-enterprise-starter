@@ -10,7 +10,9 @@ public interface CustomerService {
 
     List<Customer> findAll();
 
-    Optional<Customer> findById(String id);
+    Customer findById(String id) throws Exception;
+
+    Optional<Customer> findByIdNoException(String id);
 
     Boolean update(String id, Customer toUpdate) throws Exception;
 
