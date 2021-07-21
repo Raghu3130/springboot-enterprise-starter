@@ -1,5 +1,6 @@
 package com.accio.spring.starter.controllers;
 
+import com.accio.spring.starter.exceptions.customer.CustomerNotFoundException;
 import com.accio.spring.starter.models.Customer;
 import com.accio.spring.starter.services.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +31,8 @@ public class CustomerController {
         if (optionalCustomer.isEmpty()) {
             // return not found error
             // FIXME: throw an http error instead of returning response
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            throw new CustomerNotFoundException(id);
         }
         return new ResponseEntity<>(optionalCustomer.get(), HttpStatus.OK);
     }

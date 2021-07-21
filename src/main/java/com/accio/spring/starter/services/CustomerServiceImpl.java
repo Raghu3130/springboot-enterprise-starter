@@ -1,8 +1,8 @@
 package com.accio.spring.starter.services;
 
-import com.accio.spring.starter.exceptions.internal.InvalidDataException;
-import com.accio.spring.starter.exceptions.internal.InvalidEmailException;
-import com.accio.spring.starter.exceptions.internal.NotFoundException;
+import com.accio.spring.starter.exceptions.customer.CustomerInvalidDataException;
+import com.accio.spring.starter.exceptions.customer.CustomerInvalidEmailException;
+import com.accio.spring.starter.exceptions.customer.CustomerNotFoundException;
 import com.accio.spring.starter.exceptions.internal.SomethingWrongException;
 import com.accio.spring.starter.models.Customer;
 import com.accio.spring.starter.repos.CustomerRepository;
@@ -59,7 +59,7 @@ public class CustomerServiceImpl implements CustomerService {
 
             if (optionalCustomer.isEmpty()) {
                 // not found
-                throw new NotFoundException("Customer by id " + id + " not found");
+                throw new CustomerNotFoundException(id);
             }
 
             Customer toSave = optionalCustomer.get();
@@ -67,7 +67,7 @@ public class CustomerServiceImpl implements CustomerService {
             this.repository.save(toSave);
 
             return true;
-        } catch(Exception e) {
+        } catch (Exception e) {
             // Log details here
             System.out.println("ERROR: while updating customer " + e);
             throw new SomethingWrongException("Something went wrong while updating customer");
@@ -83,21 +83,21 @@ public class CustomerServiceImpl implements CustomerService {
     private Boolean validate(Customer toValidate) throws Exception {
         if (toValidate.getEmail() == null || toValidate.getEmail().equals("")) {
             // Invalid email
-            throw new InvalidEmailException("Invalid email");
+            throw new CustomerInvalidEmailException(toValidate.getEmail());
         }
 
         if (toValidate.getFirstName() == null || toValidate.getFirstName().equals("")) {
             // Invalid data
-            throw new InvalidDataException("Invalid first name");
+            throw new CustomerInvalidDataException("firstName", toValidate.getFirstName());
         }
 
         if (toValidate.getLastName() == null || toValidate.getLastName().equals("")) {
             // Invalid data
-            throw new InvalidDataException("Invalid last name");
+//            throw new InvalidDataException("Invalid last name");
+            throw new CustomerInvalidDataException("lastName", toValidate.getLastName());
         }
         return true;
     }
-
 
 
 }
