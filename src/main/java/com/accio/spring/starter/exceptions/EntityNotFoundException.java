@@ -1,16 +1,17 @@
 package com.accio.spring.starter.exceptions;
 
-import org.springframework.util.StringUtils;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.stream.IntStream;
-
-public class EntityNotFoundException extends RuntimeException {
+public class EntityNotFoundException extends NotFoundException {
     public EntityNotFoundException(Class clazz, String... searchParamsMap) {
-        super(EntityNotFoundException.generateMessage(clazz.getSimpleName(), toMap(String.class, String.class, searchParamsMap)));
+        super(
+                BaseExceptionHelper.generateMessage(
+                        " was not found for parameters ",
+                        clazz.getSimpleName(),
+                        BaseExceptionHelper.toMap(String.class, String.class, searchParamsMap)
+                )
+        );
     }
 
+    /*
     private static String generateMessage(String entity, Map<String, String> searchParams) {
         return StringUtils.capitalize(entity) +
                 " was not found for parameters " +
@@ -26,4 +27,5 @@ public class EntityNotFoundException extends RuntimeException {
                         (m, i) -> m.put(keyType.cast(entries[i]), valueType.cast(entries[i + 1])),
                         Map::putAll);
     }
+    */
 }

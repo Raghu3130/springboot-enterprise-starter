@@ -1,10 +1,9 @@
 package com.accio.spring.starter.services;
 
+import com.accio.spring.starter.exceptions.BadRequestException;
 import com.accio.spring.starter.exceptions.EntityNotFoundException;
-import com.accio.spring.starter.exceptions.customer.CustomerInvalidDataException;
-import com.accio.spring.starter.exceptions.customer.CustomerInvalidEmailException;
+import com.accio.spring.starter.exceptions.InternalServerErrorException;
 import com.accio.spring.starter.exceptions.customer.CustomerNotFoundException;
-import com.accio.spring.starter.exceptions.internal.SomethingWrongException;
 import com.accio.spring.starter.models.Customer;
 import com.accio.spring.starter.repos.CustomerRepository;
 import com.accio.spring.starter.utils.CopyObjectUtil;
@@ -56,7 +55,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public Customer findById(String id) {
         Optional<Customer> optionalCustomer = repository.findById(id);
-        if(optionalCustomer.isEmpty() == true) {
+        if (optionalCustomer.isEmpty() == true) {
             throw new EntityNotFoundException(Customer.class, "id", id);
         }
         return optionalCustomer.get();
@@ -80,7 +79,7 @@ public class CustomerServiceImpl implements CustomerService {
         } catch (Exception e) {
             // Log details here
             System.out.println("ERROR: while updating customer " + e);
-            throw new SomethingWrongException("Something went wrong while updating customer");
+            throw new InternalServerErrorException(Customer.class, "Something went wrong while updating customer");
         }
     }
 
@@ -93,18 +92,17 @@ public class CustomerServiceImpl implements CustomerService {
     private Boolean validate(Customer toValidate) throws Exception {
         if (toValidate.getEmail() == null || toValidate.getEmail().equals("")) {
             // Invalid email
-            throw new CustomerInvalidEmailException(toValidate.getEmail());
+            throw new BadRequestException(Customer.class, "email", toValidate.getEmail());
         }
 
         if (toValidate.getFirstName() == null || toValidate.getFirstName().equals("")) {
             // Invalid data
-            throw new CustomerInvalidDataException("firstName", toValidate.getFirstName());
+            throw new BadRequestException(Customer.class, "firstName", toValidate.getFirstName());
         }
 
         if (toValidate.getLastName() == null || toValidate.getLastName().equals("")) {
             // Invalid data
-//            throw new InvalidDataException("Invalid last name");
-            throw new CustomerInvalidDataException("lastName", toValidate.getLastName());
+            throw new BadRequestException(Customer.class, "lastName", toValidate.getLastName());
         }
         return true;
     }
