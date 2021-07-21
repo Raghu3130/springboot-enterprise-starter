@@ -7,9 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,8 +18,8 @@ public class CustomerController {
     @Autowired
     CustomerService service;
 
-    @GetMapping("/api/customers/")
-    public ResponseEntity<List<Customer>>getAll() {
+    @GetMapping("/api/customers")
+    public ResponseEntity<List<Customer>> getAll() {
         List<Customer> allCustomers = this.service.findAll();
         return new ResponseEntity<>(allCustomers, HttpStatus.OK);
     }
@@ -29,7 +27,7 @@ public class CustomerController {
     @GetMapping("/api/customers/{id}")
     public ResponseEntity<Customer> getOne(@PathVariable String id) {
         Optional<Customer> optionalCustomer = this.service.findById(id);
-        if(optionalCustomer.isEmpty()) {
+        if (optionalCustomer.isEmpty()) {
             // return not found error
             // FIXME: throw an http error instead of returning response
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
