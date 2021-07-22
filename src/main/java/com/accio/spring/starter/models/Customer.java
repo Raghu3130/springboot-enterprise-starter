@@ -15,11 +15,11 @@ public class Customer {
     private String lastName;
     private String email;
 
-    Customer() {
+    public Customer() {
 
     }
 
-    Customer(String id, String firstName, String lastName, String email) {
+    public Customer(String id, String firstName, String lastName, String email) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -56,5 +56,15 @@ public class Customer {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    @Override
+    public String toString() {
+        return "Customer{" +
+                "id='" + id + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                '}';
     }
 }
