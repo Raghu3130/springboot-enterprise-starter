@@ -1,6 +1,9 @@
 package com.accio.spring.starter.exceptions;
 
 import com.accio.spring.starter.exceptions.apierror.ApiError;
+import com.accio.spring.starter.responses.StandardResponse;
+import com.accio.spring.starter.responses.StandardResponseBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
@@ -40,6 +43,9 @@ import static org.springframework.http.HttpStatus.*;
 @ControllerAdvice
 @Slf4j
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
+
+    @Autowired
+    StandardResponseBuilder standardResponseBuilder;
 
     /**
      * Handle MissingServletRequestParameterException. Triggered when a 'required' request parameter is missing.
@@ -222,7 +228,15 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
 
     private ResponseEntity<Object> buildResponseEntity(ApiError apiError) {
-        return new ResponseEntity<>(apiError, apiError.getStatus());
+//        return new ResponseEntity<>(apiError, apiError.getStatus());
+        StandardResponse standardResponse =  standardResponseBuilder.createErrorResponse(
+                apiError.getStatus().getReasonPhrase(),
+                apiError.getStatus().value(),
+                apiError.getMessage(),
+                apiError.getErrorCode()
+        );
+
+        return new ResponseEntity<>(standardResponse, apiError.getStatus());
     }
 
     /**
@@ -264,6 +278,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
             NotFoundException ex) {
         ApiError apiError = new ApiError(NOT_FOUND);
         apiError.setMessage(ex.getMessage());
+        apiError.setErrorCode(ex.getErrorCode());
         return buildResponseEntity(apiError);
     }
 

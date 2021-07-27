@@ -20,6 +20,8 @@ public class ApiError {
 
     private String message;
 
+    private String errorCode;
+
     private String debugMessage;
 
     private List<ApiSubError> subErrors;
@@ -88,6 +90,13 @@ public class ApiError {
         this.subErrors = subErrors;
     }
 
+    public String getErrorCode() {
+        return errorCode;
+    }
+
+    public void setErrorCode(String errorCode) {
+        this.errorCode = errorCode;
+    }
 
     private void addSubError(ApiSubError subError) {
         if (subErrors == null) {

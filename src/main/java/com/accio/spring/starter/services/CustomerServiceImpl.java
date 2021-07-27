@@ -3,6 +3,8 @@ package com.accio.spring.starter.services;
 import com.accio.spring.starter.exceptions.BadRequestException;
 import com.accio.spring.starter.exceptions.EntityNotFoundException;
 import com.accio.spring.starter.exceptions.InternalServerErrorException;
+import com.accio.spring.starter.exceptions.customer.CustomerInvalidDataException;
+import com.accio.spring.starter.exceptions.customer.CustomerInvalidEmailException;
 import com.accio.spring.starter.exceptions.customer.CustomerNotFoundException;
 import com.accio.spring.starter.models.Customer;
 import com.accio.spring.starter.repos.CustomerRepository;
@@ -24,7 +26,7 @@ public class CustomerServiceImpl implements CustomerService {
     CopyObjectUtil copyObjectUtil;
 
     @Override
-    public Customer create(Customer toCreate) throws Exception {
+    public Customer create(Customer toCreate) throws RuntimeException {
         try {
             // validate object
             // the validate method will throw an exception if not valid
@@ -55,14 +57,14 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public Customer findById(String id) {
         Optional<Customer> optionalCustomer = repository.findById(id);
-        if (optionalCustomer.isEmpty() == true) {
-            throw new EntityNotFoundException(Customer.class, "id", id);
+        if (optionalCustomer.isEmpty()) {
+            throw new CustomerNotFoundException(id);
         }
         return optionalCustomer.get();
     }
 
     @Override
-    public Boolean update(String id, Customer toUpdate) throws Exception {
+    public Boolean update(String id, Customer toUpdate) throws CustomerNotFoundException, InternalServerErrorException {
         try {
             Optional<Customer> optionalCustomer = this.findByIdNoException(id);
 
@@ -76,7 +78,12 @@ public class CustomerServiceImpl implements CustomerService {
             this.repository.save(toSave);
 
             return true;
-        } catch (Exception e) {
+        }
+        catch (CustomerNotFoundException e) {
+            // Log details here
+            throw e;
+        }
+        catch (Exception e) {
             // Log details here
             System.out.println("ERROR: while updating customer " + e);
             throw new InternalServerErrorException(Customer.class, "Something went wrong while updating customer");
@@ -89,20 +96,20 @@ public class CustomerServiceImpl implements CustomerService {
         return true;
     }
 
-    private Boolean validate(Customer toValidate) throws Exception {
+    private Boolean validate(Customer toValidate) throws RuntimeException {
         if (toValidate.getEmail() == null || toValidate.getEmail().equals("")) {
             // Invalid email
-            throw new BadRequestException(Customer.class, "email", toValidate.getEmail());
+            throw new CustomerInvalidEmailException(toValidate.getEmail());
         }
 
         if (toValidate.getFirstName() == null || toValidate.getFirstName().equals("")) {
             // Invalid data
-            throw new BadRequestException(Customer.class, "firstName", toValidate.getFirstName());
+            throw new CustomerInvalidDataException("firstName", toValidate.getFirstName());
         }
 
         if (toValidate.getLastName() == null || toValidate.getLastName().equals("")) {
             // Invalid data
-            throw new BadRequestException(Customer.class, "lastName", toValidate.getLastName());
+            throw new CustomerInvalidDataException("lastName", toValidate.getLastName());
         }
         return true;
     }

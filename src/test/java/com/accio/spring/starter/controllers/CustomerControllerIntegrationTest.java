@@ -1,6 +1,7 @@
 package com.accio.spring.starter.controllers;
 
 import com.accio.spring.starter.models.Customer;
+import com.accio.spring.starter.responses.StandardResponse;
 import com.accio.spring.starter.testhelpers.CustomerHelper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,9 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -25,10 +29,19 @@ public class CustomerControllerIntegrationTest {
     }
 
 
-    private ResponseEntity<Customer> createCustomer() {
+    private ResponseEntity<StandardResponse> createCustomer() {
         HttpEntity<Customer> request = new HttpEntity<>(customer);
-        ResponseEntity<Customer> createResponse = testRestTemplate.postForEntity("/api/customers", request, Customer.class);
-        return createResponse;
+        StandardResponse<Customer> sr = new StandardResponse<>();
+        return testRestTemplate.postForEntity("/api/customers", request, StandardResponse.class);
+    }
+
+    private Customer getCustomerFromHashMap(HashMap<String, Object> hashMap) {
+        Customer c = new Customer();
+        c.setId(( String )hashMap.get("id"));
+        c.setFirstName(( String )hashMap.get("firstName"));
+        c.setLastName(( String )hashMap.get("lastName"));
+        c.setEmail(( String )hashMap.get("email"));
+        return c;
     }
 
 
@@ -36,41 +49,51 @@ public class CustomerControllerIntegrationTest {
     public void createCustomerTest() {
         HttpEntity<Customer> request = new HttpEntity<>(customer);
 
-        ResponseEntity<Customer> response = testRestTemplate.postForEntity("/api/customers", request, Customer.class);
+        ResponseEntity<StandardResponse> response = testRestTemplate.postForEntity("/api/customers", request, StandardResponse.class);
 
-        assertNotNull(response.getBody().getId());
-        customer.setId(response.getBody().getId());
-        assertEquals("John", response.getBody().getFirstName());
-        assertEquals("Doe", response.getBody().getLastName());
-        assertEquals("johndoe@abc.com", response.getBody().getEmail());
+        HashMap<String, Object> hashMap = response.getBody() != null ? (HashMap<String, Object>)  response.getBody().getPayload(): null;
+
+        Customer customer = getCustomerFromHashMap(hashMap);
+
+        assertNotNull(customer.getId());
+        assertEquals("John", customer.getFirstName());
+
+        assertEquals("Doe", customer.getLastName());
+        assertEquals("johndoe@abc.com", customer.getEmail());
     }
 
 
     @Test
     public void getSingleCustomerTest() {
         // creating new customer
-        ResponseEntity<Customer> createResponse = createCustomer();
+        ResponseEntity<StandardResponse> createResponse = createCustomer();
+        HashMap<String, Object> hashMap = createResponse.getBody() != null ? (HashMap<String, Object>) createResponse.getBody().getPayload() : null;
+        Customer c = getCustomerFromHashMap(hashMap);
 
-        String customerId = createResponse.getBody().getId();
-        System.out.println("customer id is " + customerId);
-        ResponseEntity<Customer> response = testRestTemplate.getForEntity("/api/customers/" + customerId, Customer.class);
+        String customerId = c.getId();
+        ResponseEntity<StandardResponse> response = testRestTemplate.getForEntity("/api/customers/" + customerId, StandardResponse.class);
 
-        assertNotNull(response.getBody().getId());
-        assertEquals("John", response.getBody().getFirstName());
-        assertEquals("Doe", response.getBody().getLastName());
-        assertEquals("johndoe@abc.com", response.getBody().getEmail());
+        HashMap<String, Object> hashMap1 = response.getBody() != null ?(HashMap<String, Object>) response.getBody().getPayload() : null;
+        Customer fetchedCustomer = getCustomerFromHashMap(hashMap1);
+
+        assertNotNull(fetchedCustomer.getId());
+        assertEquals("John", fetchedCustomer.getFirstName());
+        assertEquals("Doe", fetchedCustomer.getLastName());
+        assertEquals("johndoe@abc.com", fetchedCustomer.getEmail());
     }
 
     @Test
     public void updateCustomerTest() {
         // creating new customer
-        ResponseEntity<Customer> createResponse = createCustomer();
-        String customerId = createResponse.getBody().getId();
+        ResponseEntity<StandardResponse> createResponse = createCustomer();
+        HashMap<String, Object> hashMap =  createResponse.getBody() != null ? (HashMap<String, Object>) createResponse.getBody().getPayload() : null;
+        Customer c = getCustomerFromHashMap(hashMap);
+        String customerId = c.getId();
         Customer toUpdate = new Customer(
                 customerId,
-                createResponse.getBody().getFirstName(),
-                createResponse.getBody().getLastName(),
-                createResponse.getBody().getEmail()
+                c.getFirstName(),
+                c.getLastName(),
+                c.getEmail()
         );
 
         // altering object values
@@ -84,17 +107,21 @@ public class CustomerControllerIntegrationTest {
         param.put("email", toUpdate.getEmail());*/
 
         // calling update request
-        ResponseEntity<Boolean> updateResponse = testRestTemplate.exchange("/api/customers", HttpMethod.PUT, request, Boolean.class);
-        assertEquals(true, updateResponse.getBody());
+        ResponseEntity<StandardResponse> updateResponse = testRestTemplate.exchange("/api/customers", HttpMethod.PUT, request, StandardResponse.class);
+        Boolean isUpdated = (Boolean) updateResponse.getBody().getPayload();
+        assertEquals(true, isUpdated);
+
 
         // fetching customer by id
-        ResponseEntity<Customer> getResponse = testRestTemplate.getForEntity("/api/customers/" + customerId, Customer.class);
+        ResponseEntity<StandardResponse> getResponse = testRestTemplate.getForEntity("/api/customers/" + customerId, StandardResponse.class);
+        HashMap<String, Object> hashMap1 = getResponse.getBody() != null ? (HashMap<String, Object>) getResponse.getBody().getPayload() : null;
+        Customer fetchedCustomer = getCustomerFromHashMap(hashMap1);
 
-        assertNotNull(getResponse.getBody().getId());
-        assertEquals(toUpdate.getId(), getResponse.getBody().getId());
-        assertEquals("Jane", getResponse.getBody().getFirstName());
-        assertEquals("Doe", getResponse.getBody().getLastName());
-        assertEquals("janedoe@abc.com", getResponse.getBody().getEmail());
+        assertNotNull(fetchedCustomer.getId());
+        assertEquals(toUpdate.getId(), fetchedCustomer.getId());
+        assertEquals("Jane", fetchedCustomer.getFirstName());
+        assertEquals("Doe", fetchedCustomer.getLastName());
+        assertEquals("janedoe@abc.com", fetchedCustomer.getEmail());
     }
 
 }
