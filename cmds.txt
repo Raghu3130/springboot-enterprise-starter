@@ -16,3 +16,8 @@ mvn spotbugs:spotbugs
 // To run gui for spotbugs
 mvn spotbugs:gui
 
+// To generate checkstyle report
+mvn checkstyle:checkstyle
+
+// To run checkstyle check
+mvn checkstyle:check
