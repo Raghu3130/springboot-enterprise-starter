@@ -1,0 +1,18 @@
+// To generate project
+mvn clean install
+
+// To build and run
+mvn spring-boot:run
+
+// To run test
+mvn test
+
+// To run test code coverage using jacoco
+mvn test jacoco:report
+
+// To run linting using spotbugs
+mvn spotbugs:spotbugs
+
+// To run gui for spotbugs
+mvn spotbugs:gui
+
