@@ -21,3 +21,7 @@ mvn checkstyle:checkstyle
 
 // To run checkstyle check
 mvn checkstyle:check
+
+// To check vulnerabilities
+mvn clean package
+mvn com.redhat.victims.maven:security-versions:check
