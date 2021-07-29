@@ -25,3 +25,6 @@ mvn checkstyle:check
 // To check vulnerabilities
 mvn clean package
 mvn com.redhat.victims.maven:security-versions:check
+
+// To run with different profiles check below link
+https://stackoverflow.com/questions/31038250/setting-active-profile-and-config-location-from-command-line-in-spring-boot
