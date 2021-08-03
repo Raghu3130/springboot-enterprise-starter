@@ -2,6 +2,7 @@ package com.accio.spring.starter.responses;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class StandardResponse<T> {
@@ -71,5 +72,12 @@ public class StandardResponse<T> {
 
     public void setPayload(T payload) {
         this.payload = payload;
+    }
+
+    public void addSubError(Object error) {
+        if (subErrors == null) {
+            subErrors = new ArrayList<>();
+        }
+        subErrors.add(error);
     }
 }
