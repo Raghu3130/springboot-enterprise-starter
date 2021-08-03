@@ -1,11 +1,6 @@
 package com.accio.spring.starter.services;
 
-import com.accio.spring.starter.exceptions.BadRequestException;
-import com.accio.spring.starter.exceptions.EntityNotFoundException;
-import com.accio.spring.starter.exceptions.InternalServerErrorException;
-import com.accio.spring.starter.exceptions.customer.CustomerInvalidDataException;
-import com.accio.spring.starter.exceptions.customer.CustomerInvalidEmailException;
-import com.accio.spring.starter.exceptions.customer.CustomerNotFoundException;
+import com.accio.spring.starter.exceptions.*;
 import com.accio.spring.starter.models.Customer;
 import com.accio.spring.starter.repos.CustomerRepository;
 import com.accio.spring.starter.utils.CopyObjectUtil;
@@ -26,8 +21,7 @@ public class CustomerServiceImpl implements CustomerService {
     CopyObjectUtil copyObjectUtil;
 
     @Override
-    public Customer create(Customer toCreate) throws RuntimeException {
-        try {
+    public Customer create(Customer toCreate) throws BadRequestException {
             // validate object
             // the validate method will throw an exception if not valid
             // thus no need to check isValid in if condition
@@ -36,12 +30,6 @@ public class CustomerServiceImpl implements CustomerService {
             toCreate.setId(UUID.randomUUID().toString());
             repository.save(toCreate);
             return toCreate;
-        } catch (Exception e) {
-            // Log details here
-            System.out.println("create customer error");
-            // Throw back to handle it in integration layer
-            throw e;
-        }
     }
 
     @Override
@@ -55,22 +43,22 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public Customer findById(String id) {
+    public Customer findById(String id) throws NotFoundException {
         Optional<Customer> optionalCustomer = repository.findById(id);
         if (optionalCustomer.isEmpty()) {
-            throw new CustomerNotFoundException(id);
+            throw new NotFoundException("Could not found customer with id " + id);
         }
         return optionalCustomer.get();
     }
 
     @Override
-    public Boolean update(String id, Customer toUpdate) throws CustomerNotFoundException, InternalServerErrorException {
+    public Boolean update(String id, Customer toUpdate) throws NotFoundException {
         try {
             Optional<Customer> optionalCustomer = this.findByIdNoException(id);
 
             if (optionalCustomer.isEmpty()) {
                 // not found
-                throw new CustomerNotFoundException(id);
+                throw new NotFoundException("Could not found customer with id " + id);
             }
 
             Customer toSave = optionalCustomer.get();
@@ -79,14 +67,14 @@ public class CustomerServiceImpl implements CustomerService {
 
             return true;
         }
-        catch (CustomerNotFoundException e) {
+        catch (NotFoundException e) {
             // Log details here
             throw e;
         }
         catch (Exception e) {
             // Log details here
             System.out.println("ERROR: while updating customer " + e);
-            throw new InternalServerErrorException(Customer.class, "Something went wrong while updating customer");
+            throw new InternalErrorException("Something went wrong while updating customer", e);
         }
     }
 
@@ -96,22 +84,38 @@ public class CustomerServiceImpl implements CustomerService {
         return true;
     }
 
-    private Boolean validate(Customer toValidate) throws RuntimeException {
+    private Boolean validate(Customer toValidate) throws BadRequestException {
+        String message = "";
+        String prefix = "Invalid data in fields";
         if (toValidate.getEmail() == null || toValidate.getEmail().equals("")) {
             // Invalid email
-            throw new CustomerInvalidEmailException(toValidate.getEmail());
+            message += "email";
         }
 
         if (toValidate.getFirstName() == null || toValidate.getFirstName().equals("")) {
             // Invalid data
-            throw new CustomerInvalidDataException("firstName", toValidate.getFirstName());
+            if(message.isEmpty() == false) {
+                message += ", firstName";
+            } else {
+                message += "firstName";
+            }
         }
 
         if (toValidate.getLastName() == null || toValidate.getLastName().equals("")) {
             // Invalid data
-            throw new CustomerInvalidDataException("lastName", toValidate.getLastName());
+            if(message.isEmpty() == false) {
+                message += ", lastName";
+            } else {
+                message += "lastName";
+            }
         }
-        return true;
+
+        if (message.isBlank() || message.isEmpty()) {
+            return true;
+        }
+
+        throw new BadRequestException(prefix + " " + message, ErrorCodes.CUSTOMER_INVALID_DATA_EXCEPTION.getCode());
+
     }
 
 

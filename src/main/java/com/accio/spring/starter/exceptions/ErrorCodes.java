@@ -6,22 +6,26 @@ import org.springframework.lang.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
-public enum ExceptionCodes {
+public enum ErrorCodes {
     CUSTOMER_NOT_FOUND_EXCEPTION("CUSTOMER_NOT_FOUND_EXCEPTION", "1001"),
     CUSTOMER_INVALID_DATA_EXCEPTION("CUSTOMER_INVALID_DATA_EXCEPTION", "1002"),
-    CUSTOMER_INVALID_EMAIL_EXCEPTION("CUSTOMER_INVALID_EMAIL_EXCEPTION", "1003");
+    INTERNAL_ERROR("INTERNAL_ERROR", "500"),
+    BAD_REQUEST("BAD_REQUEST", "400"),
+    NOT_FOUND("NOT_FOUND", "404"),
+    UNAUTHORIZED("UNAUTHORIZED", "401")
+    ;
 
 
     private final String code;
     private final String name;
 
-    ExceptionCodes(String name, String code) {
+    ErrorCodes(String name, String code) {
         this.name = name;
         this.code = code;
     }
 
-    public static ExceptionCodes valueOfException(String n) {
-        for (ExceptionCodes e : values()) {
+    public static ErrorCodes valueOfException(String n) {
+        for (ErrorCodes e : values()) {
             if (e.name.equals(n)) {
                 return e;
             }
@@ -36,5 +40,5 @@ public enum ExceptionCodes {
     public String getName() {
         return name;
     }
-
 }
+
