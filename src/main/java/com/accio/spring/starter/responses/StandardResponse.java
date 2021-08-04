@@ -1,83 +1,182 @@
 package com.accio.spring.starter.responses;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class StandardResponse<T> {
 
-    Boolean success;
-    String message;
-    String status;
-    Integer statusCode;
+    /**
+     * To know is response for success or error.
+     * it will be set false if any error occurred and set response as error
+     */
+    private Boolean success;
 
-    String errorCode;
-    List<Object> subErrors;
+    /**
+     * To pass success or error message.
+     */
+    private String message;
 
+    /**
+     * To pass response status.
+     */
+    private String status;
 
-    T payload;
+    /**
+     * To pass response statusCode.
+     */
+    private Integer statusCode;
 
+    /**
+     * To pass errorCode of internal error only in error response.
+     */
+    private String errorCode;
+
+    /**
+     * To pass a list of subErrors only in error response.
+     */
+    private List<Object> subErrors;
+
+    /**
+     * To pass a payload only in success response.
+     */
+    private T payload;
+
+    /**
+     * To get success property.
+     *
+     * @return Boolean
+     */
     public Boolean getSuccess() {
         return success;
     }
 
-    public void setSuccess(Boolean success) {
-        this.success = success;
+    /**
+     * To set success property.
+     *
+     * @param isSuccess Boolean
+     */
+    public void setSuccess(final Boolean isSuccess) {
+        this.success = isSuccess;
     }
 
+    /**
+     * To get message property.
+     *
+     * @return String
+     */
     public String getMessage() {
         return message;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    /**
+     * To set message property.
+     *
+     * @param responseMessage String
+     */
+    public void setMessage(final String responseMessage) {
+        this.message = responseMessage;
     }
 
+    /**
+     * To get status property.
+     *
+     * @return String
+     */
     public String getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    /**
+     * To set status property.
+     *
+     * @param responseStatus String
+     */
+    public void setStatus(final String responseStatus) {
+        this.status = responseStatus;
     }
 
+    /**
+     * To get statusCode property.
+     *
+     * @return Integer
+     */
     public Integer getStatusCode() {
         return statusCode;
     }
 
-    public void setStatusCode(Integer statusCode) {
-        this.statusCode = statusCode;
+    /**
+     * To set statusCode property.
+     *
+     * @param responseStatusCode Integer
+     */
+    public void setStatusCode(final Integer responseStatusCode) {
+        this.statusCode = responseStatusCode;
     }
 
+    /**
+     * To get errorCode property.
+     *
+     * @return String
+     */
     public String getErrorCode() {
         return errorCode;
     }
 
-    public void setErrorCode(String errorCode) {
-        this.errorCode = errorCode;
+    /**
+     * To set errorCode property.
+     *
+     * @param internalErrorCode String
+     */
+    public void setErrorCode(final String internalErrorCode) {
+        this.errorCode = internalErrorCode;
     }
 
+    /**
+     * To get subErrors property.
+     *
+     * @return List<Object>
+     */
     public List<Object> getSubErrors() {
         return subErrors;
     }
 
-    public void setSubErrors(List<Object> subErrors) {
-        this.subErrors = subErrors;
+    /**
+     * To set subErrors property.
+     *
+     * @param internalSubErrors List<Object>
+     */
+    public void setSubErrors(final List<Object> internalSubErrors) {
+        this.subErrors = internalSubErrors;
     }
 
+    /**
+     * To get payload property.
+     *
+     * @return T
+     */
     public T getPayload() {
         return payload;
     }
 
-    public void setPayload(T payload) {
-        this.payload = payload;
+    /**
+     * To set payload property.
+     *
+     * @param responsePayload T
+     */
+    public void setPayload(final T responsePayload) {
+        this.payload = responsePayload;
     }
 
-    public void addSubError(Object error) {
+    /**
+     * To add subError in subErrors property.
+     *
+     * @param error Object
+     */
+    public void addSubError(final Object error) {
         if (subErrors == null) {
             subErrors = new ArrayList<>();
         }
         subErrors.add(error);
     }
+
 }

@@ -10,8 +10,17 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class PingController {
 
-    Logger logger = LoggerFactory.getLogger(PingController.class);
+    /**
+     * Logger instance.
+     */
+    private Logger logger = LoggerFactory.getLogger(PingController.class);
 
+    /**
+     * Ping to check server is running or not.
+     * always return "PONG"
+     *
+     * @return String
+     */
     @GetMapping("/ping")
     ResponseEntity<String> ping() {
         logger.info("message info");
@@ -20,4 +29,5 @@ public class PingController {
         logger.debug("message debug");
         return new ResponseEntity<>("PONG", HttpStatus.OK);
     }
+
 }
