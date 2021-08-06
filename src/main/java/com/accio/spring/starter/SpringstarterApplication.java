@@ -12,6 +12,16 @@ public class SpringstarterApplication {
      * @param args String[]
      */
     public static void main(final String[] args) {
+        // SpringApplication.run(SpringstarterApplication.class, args);
+        new SpringstarterApplication().run(args);
+    }
+
+    /**
+     * Private constructor to fix checkstyle error.
+     *
+     * @param args String[] as passed in main method
+     */
+    private void run(final String[] args) {
         SpringApplication.run(SpringstarterApplication.class, args);
     }
 
