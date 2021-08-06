@@ -6,8 +6,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class SpringstarterApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(SpringstarterApplication.class, args);
-	}
+    /**
+     * The main method to execute application.
+     *
+     * @param args String[]
+     */
+    public static void main(final String[] args) {
+        SpringApplication.run(SpringstarterApplication.class, args);
+    }
 
 }

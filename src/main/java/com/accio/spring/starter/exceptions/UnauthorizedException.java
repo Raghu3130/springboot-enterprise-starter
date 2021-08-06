@@ -1,14 +1,14 @@
 package com.accio.spring.starter.exceptions;
 
-public class NotFoundException extends BaseException {
+public class UnauthorizedException extends BaseException {
 
     /**
      * Constructor with message param.
      *
      * @param message String
      */
-    public NotFoundException(final String message) {
-        super(message, ErrorCodes.NOT_FOUND.getCode());
+    public UnauthorizedException(final String message) {
+        super(message);
     }
 
     /**
@@ -17,7 +17,10 @@ public class NotFoundException extends BaseException {
      * @param message   String
      * @param errorCode String
      */
-    public NotFoundException(final String message, final String errorCode) {
+    public UnauthorizedException(
+            final String message,
+            final String errorCode
+    ) {
         super(message, errorCode);
     }
 
@@ -27,8 +30,11 @@ public class NotFoundException extends BaseException {
      * @param message String
      * @param cause   Throwable
      */
-    public NotFoundException(final String message, final Throwable cause) {
-        super(message, cause, ErrorCodes.NOT_FOUND.getCode());
+    public UnauthorizedException(
+            final String message,
+            final Throwable cause
+    ) {
+        super(message, cause, ErrorCodes.UNAUTHORIZED.getCode());
     }
 
     /**
@@ -38,7 +44,7 @@ public class NotFoundException extends BaseException {
      * @param cause     Throwable
      * @param errorCode String
      */
-    public NotFoundException(
+    public UnauthorizedException(
             final String message,
             final Throwable cause,
             final String errorCode
@@ -52,7 +58,7 @@ public class NotFoundException extends BaseException {
      * @param cause     Throwable
      * @param errorCode String
      */
-    public NotFoundException(
+    public UnauthorizedException(
             final Throwable cause,
             final String errorCode
     ) {
@@ -62,13 +68,13 @@ public class NotFoundException extends BaseException {
     /**
      * Constructor with all properties.
      *
-     * @param message            String
-     * @param cause              Throwable
-     * @param enableSuppression  boolean
+     * @param message String
+     * @param cause Throwable
+     * @param enableSuppression boolean
      * @param writableStackTrace boolean
-     * @param errorCode          String
+     * @param errorCode String
      */
-    public NotFoundException(
+    public UnauthorizedException(
             final String message,
             final Throwable cause,
             final boolean enableSuppression,

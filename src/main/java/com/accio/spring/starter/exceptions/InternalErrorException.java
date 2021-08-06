@@ -1,44 +1,50 @@
 package com.accio.spring.starter.exceptions;
 
-public class NotFoundException extends BaseException {
+public class InternalErrorException extends BaseRuntimeException {
 
     /**
-     * Constructor with message param.
+     * Constructor with only message param.
      *
      * @param message String
      */
-    public NotFoundException(final String message) {
-        super(message, ErrorCodes.NOT_FOUND.getCode());
+    public InternalErrorException(final String message) {
+        super(message);
     }
 
     /**
-     * Constructor with message and errorCode param.
+     * Constructor with  message and errorCode param.
      *
      * @param message   String
      * @param errorCode String
      */
-    public NotFoundException(final String message, final String errorCode) {
+    public InternalErrorException(
+            final String message,
+            final String errorCode
+    ) {
         super(message, errorCode);
     }
 
     /**
-     * Constructor with message and cause param.
+     * Constructor with  message and cause param.
      *
      * @param message String
      * @param cause   Throwable
      */
-    public NotFoundException(final String message, final Throwable cause) {
-        super(message, cause, ErrorCodes.NOT_FOUND.getCode());
+    public InternalErrorException(
+            final String message,
+            final Throwable cause
+    ) {
+        super(message, cause, ErrorCodes.INTERNAL_ERROR.getCode());
     }
 
     /**
-     * Constructor with message, cause and errorCode param.
+     * Constructor with  message, cause and errorCode param.
      *
      * @param message   String
      * @param cause     Throwable
      * @param errorCode String
      */
-    public NotFoundException(
+    public InternalErrorException(
             final String message,
             final Throwable cause,
             final String errorCode
@@ -47,12 +53,12 @@ public class NotFoundException extends BaseException {
     }
 
     /**
-     * Constructor with cause and errorCode param.
+     * Constructor with  cause and errorCode param.
      *
      * @param cause     Throwable
      * @param errorCode String
      */
-    public NotFoundException(
+    public InternalErrorException(
             final Throwable cause,
             final String errorCode
     ) {
@@ -60,7 +66,7 @@ public class NotFoundException extends BaseException {
     }
 
     /**
-     * Constructor with all properties.
+     * Constructor with  all properties.
      *
      * @param message            String
      * @param cause              Throwable
@@ -68,7 +74,7 @@ public class NotFoundException extends BaseException {
      * @param writableStackTrace boolean
      * @param errorCode          String
      */
-    public NotFoundException(
+    public InternalErrorException(
             final String message,
             final Throwable cause,
             final boolean enableSuppression,
