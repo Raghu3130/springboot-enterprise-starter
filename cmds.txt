@@ -28,3 +28,9 @@ mvn com.redhat.victims.maven:security-versions:check
 
 // To run with different profiles check below link
 https://stackoverflow.com/questions/31038250/setting-active-profile-and-config-location-from-command-line-in-spring-boot
+
+// To build docker image
+docker build --build-arg REVISION=0.0.1 -t spring-starter-01 .
+
+// To run a temporary container from image
+docker run -it --rm -p 5000:8080 --name spring-starter-cont-01 spring-starter-01:latest
