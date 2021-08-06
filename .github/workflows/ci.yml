@@ -21,5 +21,8 @@ jobs:
       with:
         java-version: '11'
         distribution: 'adopt'
+    - name: Checkstyle check
+      run: mvn checkstyle:check
+      
     - name: Build with Maven
       run: mvn -B package --file pom.xml
