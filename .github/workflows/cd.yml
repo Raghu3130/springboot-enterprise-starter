@@ -24,7 +24,7 @@ jobs:
         run: mvn checkstyle:check
 
       - name: Build with Maven
-        run: mvn -B package --file pom.xml
+        run: mvn package
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
